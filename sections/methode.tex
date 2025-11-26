@@ -1,13 +1,181 @@
-\newpage
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{url}
+\usepackage{graphicx}
+
+\begin{document}
+
 \section{Rappel du schéma méthodologique}
 
-La méthodologie hypothétique utilisée pour NavetteAuto comprend :
+\subsection{Type d'étude et justification scientifique}
+
+Le déploiement public de la « NavetteAuto » soulève des enjeux critiques qui dépassent sa performance technique et conditionnent sa légitimité sociale. [1]En matière de gouvernance, la question centrale consiste à définir un cadre clair pour la supervision, la certification et la régulation continue d'un système d'IA aussi complexe, en établissant quelles instances (internes, étatiques, indépendantes) sont habilitées à auditer ses décisions et à autoriser sa mise en service. Cette gouvernance est directement liée à [2]la responsabilité en cas d'accident. Le caractère de « boîte noire » partielle de l'IA, combiné à l'architecture hybride du système, rend complexe l'attribution des fautes, créant un flou juridique entre la responsabilité des développeurs, celle de l'opérateur, ou même une responsabilité propre à l'algorithme. Enfin, ces incertitudes juridiques et éthiques menacent directement [3]l'acceptabilité sociale. La méfiance du public pourrait émerger d'une perception d'opacité, de craintes pour la sécurité physique et la protection des données collectées. Une transparence proactive sur les capacités, les limites du système et les mesures de sécurité est donc indispensable pour construire la confiance, sans laquelle l'innovation, aussi prometteuse soit-elle, risque de se heurter à un rejet sociétal.
+
+\subsection{Critique de l'existant sur l'apprentissage par imitation conditionnelle}
+
+L'article que nous avons lu propose une avancée significative dans l'apprentissage par imitation pour la conduite autonome en introduisant des commandes conditionnelles pour résoudre l'ambiguïté des actions dans des situations comme les intersections. Cependant, il présente plusieurs limites contextuelles et pratiques :
+
+\subsubsection{Limites contextuelles}
 
 \begin{itemize}
-    \item un module de perception basé sur la fusion LiDAR-caméra ;
-    \item un modèle de détection d’obstacles reposant sur l’apprentissage profond ;
-    \item un algorithme de décision utilisant l’apprentissage par renforcement ;
-    \item un simulateur urbain pour valider les trajectoires en environnement complexe.
+\item Commandes discrètes et limitées
+\item Forte dépendance à un humain ou à un planificateur
+\item Apprentissage supervisé pur : le modèle n'apprend qu'à reproduire le comportement du démonstrateur, avec les biais et les limites de celui-ci.
+\item Généralisation limitée à des environnements très différents
 \end{itemize}
+
+\subsubsection{Limites dans la pratique}
+
+\begin{itemize}
+\item Collecte de données complexe et coûteuse : nécessite des démonstrations humaines avec injection de bruit pour apprendre les récupérations, ce qui est épuisant pour le conducteur et difficile à mettre à l'échelle.
+
+\item Sensibilité aux conditions environnementales : les performances se dégradent sans une augmentation agressive des données (data augmentation), surtout en conditions météorologiques changeantes.
+\item Absence de prise en compte des règles de circulation : le modèle ignore les feux tricolores et les stops pendant l'entraînement. Cela limite son applicabilité en milieu urbain régulé.
+\end{itemize}
+
+Bien que l'approche soit prometteuse et améliore le contrôle des politiques de conduite par imitation, elle reste dépendante d'un flux de commandes externes, d'un jeu de données riche et varié, et d'une architecture spécialisée. Son déploiement à grande échelle nécessiterait :
+
+\begin{itemize}
+\item Une intégration avec des modules de planification autonome,
+\item Une gestion des situations critiques et des règles de circulation,
+\item Une extension à des commandes plus riches, voire en langage naturel.
+\end{itemize}
+
+Ces limites ouvrent des pistes importantes pour les travaux futurs, comme le soulignent les auteurs en évoquant l'utilisation du langage naturel comme prochaine étape.
+
+\subsection{Plan d'analyse}
+
+Afin de mettre en place un système d'IA complet pour une navette électrique autonome (Niveau 4) destinée au transport public sur un campus universitaire ou dans un centre-ville, un certain nombre d'étapes seront suivies. Cette méthodologie suit un processus itératif et cyclique, allant de la simulation vers le déploiement réel, en passant par des tests rigoureux sur piste fermée.
+
+\textbf{Étape 1 : Conception de l'architecture système}\\
+Il s'agira de définir l'architecture logicielle et matérielle de la navette. En ayant fait une sélection et une intégration des capteurs, une utilisation d'une plateforme pour des calculs performants.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{architecture.png}
+    \caption{Architecture de fonctionnement}
+    \label{fig:architecture}
+\end{figure}
+\ref{fig:architecture}
+[4]Figure01 : Architecture de fonctionnement
+
+\textbf{Étape 2 : Développement du modèle de perception par fusion de capteurs}\\
+L'objectif est de créer un modèle unique et robuste qui combine les forces de la vision et du LiDAR, par une collecte et annotation des données, suivie d'une fusion précoce des capteurs.\\
+Nous avons spécifiquement commencé par faire une collecte et une annotation des données et enfin une fusion précoce des capteurs.
+
+\textbf{Étape 3 : Développement de l'algorithme de décision par apprentissage par renforcement (RL)}\\
+Il s'agit d'entraîner un agent (la navette) à prendre des décisions de conduite optimales et sûres. Nous avons défini le problème de l'algorithme pour la sortie du module de perception (positions des objets, feux, localisation de la navette, sa vitesse et la trajectoire planifiée). Puis nous avons fait un entraînement en simulation et enfin un apprentissage par transfert et fine-tuning.
+
+\textbf{Étape 4 : Intégration, validation et tests}\\
+L'objectif est d'assembler les modules et de valider le système dans son ensemble selon un processus rigoureux.
+
+\textbf{Étape 5 : Déploiement pilote et surveillance continue}\\
+Il s'agit de lancer un service pilote et d'assurer son bon fonctionnement.
+
+\subsection{Instruments et outils utilisés}
+
+Afin de mener notre analyse et de pouvoir mettre en place notre système autonome, un certain nombre d'outils et d'instruments ont été utilisés.
+
+\textbf{Pour l'architecture matérielle, nous avons utilisé :}
+\begin{itemize}
+\item Caméras Allied Vision/FLIR, LiDAR Velodyne/Ouster, Radar Continental, GPS RTK NovAtel pour la perception environnementale et la localisation précise
+\item Calculateurs NVIDIA DRIVE AGX Orin/PX2 et microcontrôleurs pour le traitement des données et l'exécution des modèles IA
+\end{itemize}
+
+\textbf{Pour l'architecture logicielle, nous avons utilisé :}
+\begin{itemize}
+\item OS \& Middleware : ROS 2, Ubuntu RT, QNX pour l'architecture logicielle et la communication temps réel
+\item PyTorch, TensorFlow, Apollo, Autoware pour le développement et le déploiement des modèles d'IA
+\item VS Code, Git, Docker, Kubernetes pour le codage, le versioning et la conteneurisation
+\end{itemize}
+
+\textbf{Pour la simulation, nous avons utilisé :}
+\begin{itemize}
+\item CARLA, NVIDIA DRIVE Sim, LG SVL pour l'entraînement RL et la validation virtuelle
+\item ROS 2 testing, pytest, Google Test pour la validation et la vérification du système
+\end{itemize}
+
+\textbf{Pour les données, nous avons utilisé :}
+\begin{itemize}
+\item Outils d'annotation : Scale AI, Labelbox, CVAT pour la labellisation des données d'entraînement
+\item Plateformes d'entraînement : NVIDIA DGX, MLflow pour l'expérimentation et la gestion des modèles
+\item Pipeline de données : Apache Kafka, TensorFlow Data Validation pour la gestion des flux de données
+\end{itemize}
+
+\textbf{Pour la sécurité des données :}
+\begin{itemize}
+\item SonarQube, Coverity, Wireshark pour la sécurité du code et du réseau
+\item IBM DOORS, InfluxDB pour la gestion des exigences et la journalisation
+\end{itemize}
+
+\textbf{Pour la gestion du projet :}
+\begin{itemize}
+\item Microsoft Project pour la planification et la documentation
+\item GitHub, Gerrit pour la communication et la revue de code
+\end{itemize}
+
+\subsection{Validité (biais/menaces, stratégies d'atténuation)}
+
+\textbf{Biais des Données d'Entraînement}
+\begin{itemize}
+\item Biais environnemental : Données collectées principalement dans des conditions optimales (beau temps, campus)
+\item Biais géographique : Modèle entraîné sur un environnement spécifique peu généralisable
+\item Biais comportemental : Reproduction des défauts de conduite du démonstrateur humain
+\end{itemize}
+
+\textbf{Biais Algorithmiques}
+\begin{itemize}
+\item Biais de la fonction de récompense : Récompenses mal calibrées pouvant favoriser des comportements dangereux
+\item Biais de perception : Modèle plus performant sur certains types d'objets/obstacles que d'autres
+\end{itemize}
+
+\textbf{Menaces}\\
+Certains facteurs externes peuvent compromettre la validité de nos résultats.
+
+\textbf{Menaces de Sécurité}
+\begin{itemize}
+\item Défaillance du modèle de perception : Mauvaise détection d'obstacles critiques
+\item Prise de décision dangereuse : Comportements inattendus dans des situations rares
+\item Dépendance aux capteurs : Panne matérielle non gérée robustement
+\end{itemize}
+
+\textbf{Menaces Techniques}
+\begin{itemize}
+\item Écart simulation-réalité : Performances dégradées en conditions réelles
+\item Latence temps-réel : Délais de traitement critiques pour l'évitement d'obstacles
+\item Robustesse environnementale : Sensibilité aux conditions météorologiques
+\end{itemize}
+
+\textbf{Menaces Opérationnelles}
+\begin{itemize}
+\item Acceptabilité utilisateur : Manque de confiance dans le système autonome
+\item Cadre réglementaire : Conformité aux normes de sécurité automobile
+\item Cybersécurité : Vulnérabilités potentielles du système
+\end{itemize}
+
+\textbf{Stratégies d'atténuation}\\
+Cependant afin de réduire les biais et les menaces un certain nombre de stratégies doit être pris :
+
+\begin{itemize}
+\item Architecture de sécurité multi-niveaux
+\item Validation exhaustive
+\item Tests en simulation : Millions de kilomètres virtuels
+\item Scénarios critiques : Cas limites et edge cases
+\item Monitoring en temps réel
+\item Mises à jour et améliorations sur les données terrain
+\end{itemize}
+
+\section*{RÉFÉRENCES}
+
+[1] Haut-Level Expert Group on AI (Commission Européenne) Ethics guidelines for trustworthy AI Année : 2019 \url{https://digital-strategy.ec.europa.eu/en/library/ethics-guidelines-trustworthy-ai}
+
+[2] European Commission Liability for Artificial Intelligence and the Internet of Things Année : 2020 \url{https://digital-strategy.ec.europa.eu/en/library/liability-artificial-intelligence-and-internet-things}
+
+[3] Awad, E., et al, The Moral Machine experiment Année : 2018 \url{https://doi.org/10.1038/s41586-018-0637-6}
+
+[4] Felipe Codevilla, Matthias M¨ uller, Antonio L´ opez, Vladlen Koltun, Alexey Dosovitskiy, End-to-end Driving via Conditional Imitation Learning Année :
+
+\end{document}
 
 Cette section résume le cadre technique sans entrer dans les détails d’implémentation.
